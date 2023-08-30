@@ -21,20 +21,27 @@ class _HomePageState extends State<HomePage> {
         "Meu app",
         //style: GoogleFonts.pacifico(),
       )),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-              child: Text(
-            "Foi clicado $quantidadeDeClicks vezes",
-            style: GoogleFonts.acme(fontSize: 20),
-          )),
-          Center(
-              child: Text(
-            "O número gerado foi: $numeroGerado",
-            style: GoogleFonts.acme(fontSize: 20),
-          )),
-        ],
+      body: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Ações do usuário",
+              style: GoogleFonts.acme(fontSize: 20),
+            ),
+            Text(
+              "Foi clicado $quantidadeDeClicks vezes",
+              style: GoogleFonts.acme(fontSize: 20),
+            ),
+            Text(
+              "O número gerado foi: $numeroGerado",
+              style: GoogleFonts.acme(fontSize: 20),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add_box),
