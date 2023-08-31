@@ -11,22 +11,46 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color.fromARGB(255, 232, 222, 245),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         body: SizedBox(
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(
-                height: 70,
+                height: 50,
               ),
-              const Icon(
-                Icons.person,
-                size: 125,
-                color: Colors.pink,
+              Row(
+                children: [
+                  Expanded(child: Container()),
+                  Expanded(
+                    flex: 5,
+                    child: Image.network(
+                      "https://hermes.digitalinnovation.one/assets/diome/logo.png",
+                    ),
+                  ),
+                  Expanded(child: Container()),
+                ],
               ),
               const SizedBox(
-                height: 50,
+                height: 20,
+              ),
+              const Text(
+                "Já tem cadastro?",
+                style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              const Text(
+                "Faça seu login e make the change_",
+                style: TextStyle(fontSize: 14, color: Colors.white),
+              ),
+              const SizedBox(
+                height: 40,
               ),
               Container(
                 width: double.infinity,
@@ -52,28 +76,54 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
-              Expanded(
-                child: Container(),
+              const SizedBox(
+                height: 30,
               ),
               Container(
-                width: double.infinity,
-                margin: EdgeInsets.symmetric(horizontal: 30),
-                color: Colors.green,
-                height: 30,
-                alignment: Alignment.center,
-                child: Text("Login"),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10))),
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color.fromARGB(255, 151, 67, 225))),
+                        child: const Text(
+                          "ENTRAR",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400),
+                        )),
+                  )),
+              Expanded(child: Container()),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 30),
                 height: 30,
                 alignment: Alignment.center,
-                child: Text("Cadastro"),
+                child: const Text(
+                  "Esqueci minha senha",
+                  style: TextStyle(
+                      color: Colors.amber, fontWeight: FontWeight.w400),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 30),
+                height: 30,
+                alignment: Alignment.center,
+                child: const Text(
+                  "Criar conta",
+                  style: TextStyle(
+                      color: Colors.green, fontWeight: FontWeight.w400),
+                ),
               ),
               const SizedBox(
-                height: 20,
+                height: 60,
               )
             ],
           ),
