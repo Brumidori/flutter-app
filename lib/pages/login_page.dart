@@ -2,18 +2,24 @@ import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
-
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  String email = "";
+  String senha = "";
+  bool isObscureText = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-        body: SizedBox(
-          width: double.infinity,
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+      body: SingleChildScrollView(
+        //encapsula para que os elementos não quebrem com o teclado do device
+        child: ConstrainedBox(
+          constraints: //delimita o space da scrollview
+              BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -57,8 +63,12 @@ class _LoginPageState extends State<LoginPage> {
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 height: 30,
                 alignment: Alignment.center,
-                child: const TextField(
-                  decoration: InputDecoration(
+                child: TextField(
+                  onChanged: (value) {
+                    email = value;
+                  },
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
                       contentPadding: EdgeInsets.only(top: -2),
                       enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
@@ -82,21 +92,36 @@ class _LoginPageState extends State<LoginPage> {
                   margin: const EdgeInsets.symmetric(horizontal: 30),
                   height: 30,
                   alignment: Alignment.center,
-                  child: const TextField(
+                  child: TextField(
+                    obscureText: isObscureText,
+                    onChanged: (value) {
+                      senha = value;
+                    },
+                    style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(top: -2),
-                        enabledBorder: UnderlineInputBorder(
+                        contentPadding: const EdgeInsets.only(top: -2),
+                        enabledBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromARGB(255, 151, 67, 225))),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromARGB(255, 151, 67, 225))),
                         hintText: "Senha",
-                        hintStyle: TextStyle(color: Colors.white),
-                        prefixIcon: Icon(Icons.lock,
+                        hintStyle: const TextStyle(color: Colors.white),
+                        prefixIcon: const Icon(Icons.lock,
                             color: Color.fromARGB(255, 151, 67, 225)),
-                        suffixIcon: Icon(Icons.visibility,
-                            color: Color.fromARGB(255, 151, 67, 225))),
+                        suffixIcon: InkWell(
+                          onTap: () {
+                            setState(() {
+                              isObscureText = !isObscureText;
+                            });
+                          },
+                          child: Icon(
+                              isObscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: const Color.fromARGB(255, 151, 67, 225)),
+                        )),
                   )),
               const SizedBox(
                 height: 30,
@@ -125,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                   )),
               Expanded(child: Container()),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.symmetric(horizontal: 30),
                 height: 30,
                 alignment: Alignment.center,
                 child: const Text(
@@ -149,6 +174,8 @@ class _LoginPageState extends State<LoginPage> {
               )
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
