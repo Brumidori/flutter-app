@@ -54,28 +54,50 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Container(
                 width: double.infinity,
-                margin: EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.symmetric(horizontal: 30),
                 height: 30,
                 alignment: Alignment.center,
-                child: const Row(
-                  children: [
-                    Expanded(flex: 2, child: Text("Informe seu email:")),
-                    Expanded(flex: 3, child: Text("Email")),
-                  ],
+                child: const TextField(
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(top: -2),
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 151, 67, 225))),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 151, 67, 225))),
+                      hintText: "Email",
+                      hintStyle: TextStyle(color: Colors.white),
+                      prefixIcon: Icon(
+                        Icons.person,
+                        color: Color.fromARGB(255, 151, 67, 225),
+                      )),
                 ),
+              ),
+              const SizedBox(
+                height: 15,
               ),
               Container(
-                width: double.infinity,
-                margin: EdgeInsets.symmetric(horizontal: 30),
-                height: 30,
-                alignment: Alignment.center,
-                child: const Row(
-                  children: [
-                    Expanded(flex: 2, child: Text("Informe sua senha:")),
-                    Expanded(flex: 3, child: Text("Senha")),
-                  ],
-                ),
-              ),
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  height: 30,
+                  alignment: Alignment.center,
+                  child: const TextField(
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(top: -2),
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 151, 67, 225))),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 151, 67, 225))),
+                        hintText: "Senha",
+                        hintStyle: TextStyle(color: Colors.white),
+                        prefixIcon: Icon(Icons.lock,
+                            color: Color.fromARGB(255, 151, 67, 225)),
+                        suffixIcon: Icon(Icons.visibility,
+                            color: Color.fromARGB(255, 151, 67, 225))),
+                  )),
               const SizedBox(
                 height: 30,
               ),
