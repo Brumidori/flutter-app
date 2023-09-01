@@ -7,8 +7,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String email = "";
-  String senha = "";
+  TextEditingController emailController = TextEditingController(text: "");
+  TextEditingController senhaController = TextEditingController(text: "");
+
   bool isObscureText = true;
 
   @override
@@ -64,9 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 30,
                 alignment: Alignment.center,
                 child: TextField(
-                  onChanged: (value) {
-                    email = value;
-                  },
+                  controller: emailController,
                   style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
                       contentPadding: EdgeInsets.only(top: -2),
@@ -94,9 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.center,
                   child: TextField(
                     obscureText: isObscureText,
-                    onChanged: (value) {
-                      senha = value;
-                    },
+                    controller: senhaController,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.only(top: -2),
@@ -133,7 +130,16 @@ class _LoginPageState extends State<LoginPage> {
                   child: SizedBox(
                     width: double.infinity,
                     child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (emailController.text.trim() ==
+                                  "email@email.com" &&
+                              senhaController.text.trim() == "123") {
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text("Erro ao efetuar o login")));
+                          }
+                        },
                         style: ButtonStyle(
                             shape: MaterialStateProperty.all(
                                 RoundedRectangleBorder(
