@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trilhaapp/repositories/nivel_repository.dart';
 import 'package:trilhaapp/shared/widgets/text_label.dart';
 
 class DadosCadastraisPage extends StatefulWidget {
@@ -13,6 +14,15 @@ class _DadosCadastraisPageState extends State<DadosCadastraisPage> {
   TextEditingController dataNascimentoController =
       TextEditingController(text: "");
   DateTime? dataNascimento;
+  var nivelRepository = NivelRepository();
+  var niveis = [];
+  var nivelSelecionado;
+
+  @override
+  void initState() {
+    niveis = nivelRepository.retornaNiveis();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +39,6 @@ class _DadosCadastraisPageState extends State<DadosCadastraisPage> {
             TextField(
               controller: nomeController,
             ),
-            const SizedBox(
-              height: 10,
-            ),
             const TextLabel(texto: "Data de nasicmento"),
             TextField(
               controller: dataNascimentoController,
@@ -47,6 +54,24 @@ class _DadosCadastraisPageState extends State<DadosCadastraisPage> {
                   dataNascimento = data;
                 }
               },
+            ),
+            const TextLabel(texto: "Nivel de experiência"),
+            Column(
+              children: niveis
+                  .map(
+                    (nivel) => RadioListTile(
+                        dense: true,
+                        title: Text(nivel.toString()),
+                        selected: nivelSelecionado == nivel,
+                        value: nivel,
+                        groupValue: nivelSelecionado,
+                        onChanged: (nivel) {
+                          setState(() {
+                            nivelSelecionado = nivel.toString();
+                          });
+                        }),
+                  )
+                  .toList(),
             ),
             TextButton(
                 onPressed: () {
