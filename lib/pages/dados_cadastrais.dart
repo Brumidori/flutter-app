@@ -1,7 +1,10 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:trilhaapp/repositories/linguagens_repository.dart';
 import 'package:trilhaapp/repositories/nivel_repository.dart';
 import 'package:trilhaapp/shared/widgets/text_label.dart';
+import '../service/app_storage_service.dart';
 
 class DadosCadastraisPage extends StatefulWidget {
   const DadosCadastraisPage({Key? key}) : super(key: key);
@@ -11,18 +14,30 @@ class DadosCadastraisPage extends StatefulWidget {
 }
 
 class _DadosCadastraisPageState extends State<DadosCadastraisPage> {
-  TextEditingController nomeController = TextEditingController(text: "");
-  TextEditingController dataNascimentoController =
-      TextEditingController(text: "");
+  var nomeController = TextEditingController(text: "");
+  var dataNacimentoController = TextEditingController(text: "");
   DateTime? dataNascimento;
   var nivelRepository = NivelRepository();
   var linguagensRepository = LinguagensRepository();
   var niveis = [];
-  var nivelSelecionado = "";
   var linguagens = [];
-  var linguagensSelecionadas = [];
-  double salarioEscolhido = 0.0;
-  int tempoDeExperiencia = 0;
+  List<String> linguagensSelecionadas = [];
+  var nivelSelecionado = "";
+  double salarioEscolhido = 0;
+  int tempoExperiencia = 0;
+  AppStorageService storage = AppStorageService();
+  final String CHAVE_DADOS_CADASTRAIS_NOME = "CHAVE_DADOS_CADASTRAIS_NOME";
+  final String CHAVE_DADOS_CADASTRAIS_DATA_NASCIMENTO =
+      "CHAVE_DADOS_CADASTRAIS_DATA_NASCIMENTO";
+  final String CHAVE_DADOS_CADASTRAIS_NIVEL_EXPERIENCIA =
+      "CHAVE_DADOS_CADASTRAIS_NIVEL_EXPERIENCIA";
+  final String CHAVE_DADOS_CADASTRAIS_LINGUAGENS =
+      "CHAVE_DADOS_CADASTRAIS_LINGUAGENS";
+  final String CHAVE_DADOS_CADASTRAIS_TEMPO_EXPERIENCIA =
+      "CHAVE_DADOS_CADASTRAIS_TEMPO_EXPERIENCIA";
+  final String CHAVE_DADOS_CADASTRAIS_SALARIO =
+      "CHAVE_DADOS_CADASTRAIS_SALARIO";
+
   bool salvando = false;
 
   @override
@@ -30,6 +45,21 @@ class _DadosCadastraisPageState extends State<DadosCadastraisPage> {
     niveis = nivelRepository.retornaNiveis();
     linguagens = linguagensRepository.retornaLinguagens();
     super.initState();
+    carregarDados();
+  }
+
+  carregarDados() async {
+    nomeController.text = await storage.getDadosCadastraisNome();
+    dataNacimentoController.text =
+        await storage.getDadosCadastraisDataNascimento();
+    if (dataNacimentoController.text.isNotEmpty) {
+      dataNascimento = DateTime.parse(dataNacimentoController.text);
+    }
+    nivelSelecionado = await storage.getDadosCadastraisNivelExperiencia();
+    linguagensSelecionadas = await storage.getDadosCadastraisLinguagens();
+    tempoExperiencia = await storage.getDadosCadastraisTempoExperiencia();
+    salarioEscolhido = await storage.getDadosCadastraisSalario();
+    setState(() {});
   }
 
   List<DropdownMenuItem<int>> returnItens(int quantidadeMaxima) {
@@ -46,11 +76,9 @@ class _DadosCadastraisPageState extends State<DadosCadastraisPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Meus Dados"),
-      ),
+      appBar: AppBar(title: const Text("Meus dados")),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         child: salvando
             ? const Center(child: CircularProgressIndicator())
             : ListView(
@@ -59,68 +87,69 @@ class _DadosCadastraisPageState extends State<DadosCadastraisPage> {
                   TextField(
                     controller: nomeController,
                   ),
-                  const TextLabel(texto: "Data de nasicmento"),
+                  const TextLabel(texto: "Data de nascimento"),
                   TextField(
-                    controller: dataNascimentoController,
-                    readOnly: true,
-                    onTap: () async {
-                      var data = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime(2000, 1, 1),
-                          firstDate: DateTime(1900, 1, 1),
-                          lastDate: DateTime(2050, 12, 31));
-                      if (data != null) {
-                        dataNascimentoController.text = data.toString();
-                        dataNascimento = data;
-                      }
-                    },
-                  ),
+                      controller: dataNacimentoController,
+                      readOnly: true,
+                      onTap: () async {
+                        var data = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime(2000, 1, 1),
+                            firstDate: DateTime(1900, 5, 20),
+                            lastDate: DateTime(2023, 10, 23));
+                        if (data != null) {
+                          dataNacimentoController.text = data.toString();
+                          dataNascimento = data;
+                        }
+                      }),
                   const TextLabel(texto: "Nivel de experiência"),
                   Column(
-                    children: niveis
-                        .map((nivel) => RadioListTile(
-                            dense: true,
-                            title: Text(nivel.toString()),
-                            selected: nivelSelecionado == nivel,
-                            value: nivel,
-                            groupValue: nivelSelecionado,
-                            onChanged: (value) {
-                              setState(() {
-                                nivelSelecionado = value.toString();
-                              });
-                            }))
-                        .toList(),
-                  ),
-                  const TextLabel(texto: "linguagens preferidas"),
+                      children: niveis
+                          .map((nivel) => RadioListTile(
+                              dense: true,
+                              title: Text(nivel.toString()),
+                              selected: nivelSelecionado == nivel,
+                              value: nivel.toString(),
+                              groupValue: nivelSelecionado,
+                              onChanged: (value) {
+                                setState(() {
+                                  nivelSelecionado = value.toString();
+                                });
+                              }))
+                          .toList()),
+                  const TextLabel(texto: "Linguagens preferidas"),
                   Column(
                     children: linguagens
-                        .map((e) => CheckboxListTile(
+                        .map((linguagem) => CheckboxListTile(
                             dense: true,
-                            title: Text(e),
-                            value: linguagensSelecionadas.contains(e),
-                            onChanged: (value) {
+                            title: Text(linguagem),
+                            value: linguagensSelecionadas.contains(linguagem),
+                            onChanged: (bool? value) {
                               if (value!) {
-                                linguagensSelecionadas.add(e);
+                                setState(() {
+                                  linguagensSelecionadas.add(linguagem);
+                                });
                               } else {
-                                linguagensSelecionadas.remove(e);
+                                setState(() {
+                                  linguagensSelecionadas.remove(linguagem);
+                                });
                               }
-                              setState(() {});
                             }))
                         .toList(),
                   ),
-                  const TextLabel(texto: "Tempo de Experiência"),
+                  const TextLabel(texto: "Tempo de experiência"),
                   DropdownButton(
-                      value: tempoDeExperiencia,
+                      value: tempoExperiencia,
                       isExpanded: true,
-                      items: returnItens(10),
+                      items: returnItens(50),
                       onChanged: (value) {
                         setState(() {
-                          tempoDeExperiencia = int.parse(value.toString());
+                          tempoExperiencia = int.parse(value.toString());
                         });
                       }),
                   TextLabel(
                       texto:
-                          "Pretensão salarial. R\$ ${salarioEscolhido.round().toString()}"),
+                          "Pretenção Salarial. R\$ ${salarioEscolhido.round().toString()}"),
                   Slider(
                       min: 0,
                       max: 10000,
@@ -131,65 +160,73 @@ class _DadosCadastraisPageState extends State<DadosCadastraisPage> {
                         });
                       }),
                   TextButton(
-                      onPressed: () {
+                    onPressed: () async {
+                      setState(() {
+                        salvando = false;
+                      });
+                      if (nomeController.text.trim().length < 3) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("O nome deve ser preenchido")));
+                        return;
+                      }
+                      if (dataNascimento == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Data de nascimento inválida")));
+                        return;
+                      }
+                      if (nivelSelecionado.trim() == '') {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("O nível deve ser selecionado")));
+                        return;
+                      }
+                      if (linguagensSelecionadas.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text(
+                                "Deve ser selecionado ao menos uma linguagem")));
+                        return;
+                      }
+                      if (tempoExperiencia == 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text(
+                                "Deve ter ao menos um ano de experiência em uma das linguagens")));
+                        return;
+                      }
+                      if (salarioEscolhido == 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text(
+                                "A pretenção salarial deve ser maior que 0")));
+                        return;
+                      }
+
+                      await storage.setDadosCadastraisNome(nomeController.text);
+                      await storage
+                          .setDadosCadastraisDataNascimento(dataNascimento!);
+                      await storage
+                          .setDadosCadastraisNivelExperiencia(nivelSelecionado);
+                      await storage
+                          .setDadosCadastraisLinguagens(linguagensSelecionadas);
+                      await storage
+                          .setDadosCadastraisTempoExperiencia(tempoExperiencia);
+                      await storage.setDadosCadastraisSalario(salarioEscolhido);
+
+                      setState(() {
+                        salvando = true;
+                      });
+                      Future.delayed(const Duration(seconds: 3), () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Dados salvo com sucesso")));
                         setState(() {
                           salvando = false;
                         });
-                        if (nomeController.text.trim().length < 3) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text("O nome deve ser preenchdido")));
-                          return;
-                        }
-                        if (dataNascimento == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text("Data de nascimento inválida")));
-                          return;
-                        }
-                        if (nivelSelecionado.trim() == "") {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text("O nivel deve ser selecionado")));
-                          return;
-                        }
-                        if (linguagensSelecionadas.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      "Deve selecionar ao menos uma linguagem")));
-                          return;
-                        }
-                        if (tempoDeExperiencia == 0) {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content: Text(
-                                  "Deve ter ao menos um ano de experiência em uma das linguagens")));
-                          return;
-                        }
-                        if (salarioEscolhido == 0) {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content: Text(
-                                  "A pretensão salarial deve ser maior que zero")));
-                          return;
-                        }
-                        setState(() {
-                          salvando = true;
-                        });
-                        Future.delayed(const Duration(seconds: 2), () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Dados salvos com sucesso")));
-                          setState(() {
-                            salvando = false;
-                          });
-                          Navigator.pop(context);
-                        });
-                        debugPrint("Dados salvos com sucesso");
-                      },
-                      child: const Text("Salvar")),
+                        Navigator.pop(context);
+                      });
+                    },
+                    child: const Text("Salvar"),
+                  ),
                 ],
               ),
       ),
