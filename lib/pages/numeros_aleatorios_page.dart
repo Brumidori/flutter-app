@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -45,13 +47,13 @@ class _NumerosAleatoriosPageState extends State<NumerosAleatoriosPage> {
               numeroGerado == null
                   ? "Nenhnum numero gerado"
                   : numeroGerado.toString(),
-              style: TextStyle(fontSize: 22),
+              style: const TextStyle(fontSize: 22),
             ),
             Text(
               quantidadeClicks == null
                   ? "Nenhum clique efetuado"
                   : quantidadeClicks.toString(),
-              style: TextStyle(fontSize: 22),
+              style: const TextStyle(fontSize: 22),
             )
           ],
         ),
