@@ -1,23 +1,20 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive/hive.dart';
 
-class NumerosAleatoriosPage extends StatefulWidget {
-  const NumerosAleatoriosPage({super.key});
+class NumerosAleatoriosHivePage extends StatefulWidget {
+  const NumerosAleatoriosHivePage({super.key});
 
   @override
-  State<NumerosAleatoriosPage> createState() => _NumerosAleatoriosPageState();
+  State<NumerosAleatoriosHivePage> createState() =>
+      _NumerosAleatoriosHivePageState();
 }
 
-class _NumerosAleatoriosPageState extends State<NumerosAleatoriosPage> {
+class _NumerosAleatoriosHivePageState extends State<NumerosAleatoriosHivePage> {
   int? numeroGerado;
   int? quantidadeClicks;
-  final CHAVE_NUMERO_ALEATORIO = "numero_gerado";
-  final CHAVE_QUANTIDADE_CLICKS = "quantidade_clicks";
-  late SharedPreferences storage;
+  late Box boxNumerosAleatorios;
 
   @override
   void initState() {
@@ -26,10 +23,14 @@ class _NumerosAleatoriosPageState extends State<NumerosAleatoriosPage> {
   }
 
   void carregarDados() async {
-    storage = await SharedPreferences.getInstance();
+    if (Hive.isBoxOpen('box_numeros_aleatorios')) {
+      boxNumerosAleatorios = Hive.box('box_numeros_aleatorios');
+    } else {
+      boxNumerosAleatorios = await Hive.openBox('box_numeros_aleatorios');
+    }
     setState(() {
-      numeroGerado = storage.getInt(CHAVE_NUMERO_ALEATORIO);
-      quantidadeClicks = storage.getInt(CHAVE_QUANTIDADE_CLICKS);
+      numeroGerado = boxNumerosAleatorios.get('numeroGerado') ?? 0;
+      quantidadeClicks = boxNumerosAleatorios.get('quantidadeClicks') ?? 0;
     });
   }
 
@@ -37,7 +38,7 @@ class _NumerosAleatoriosPageState extends State<NumerosAleatoriosPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(title: const Text("Gerador de Números aleatórios")),
+      appBar: AppBar(title: const Text("Hive")),
       body: Container(
         alignment: Alignment.center,
         child: Column(
@@ -61,14 +62,13 @@ class _NumerosAleatoriosPageState extends State<NumerosAleatoriosPage> {
       floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: () async {
-            storage = await SharedPreferences.getInstance();
             var random = Random();
             setState(() {
               numeroGerado = random.nextInt(1000);
               quantidadeClicks = (quantidadeClicks ?? 0) + 1;
             });
-            storage.setInt(CHAVE_NUMERO_ALEATORIO, numeroGerado!);
-            storage.setInt(CHAVE_QUANTIDADE_CLICKS, quantidadeClicks!);
+            boxNumerosAleatorios.put('numeroGerado', numeroGerado);
+            boxNumerosAleatorios.put('quantidadeClicks', quantidadeClicks);
           }),
     ));
   }
