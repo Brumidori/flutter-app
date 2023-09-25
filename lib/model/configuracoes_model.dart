@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_getters_setters
+
 class ConfiguracoesModel {
   String _nomeUsuario = "";
   double _altura = 0;
