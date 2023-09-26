@@ -4,6 +4,7 @@ import 'package:trilhaapp/pages/image_assets.dart';
 import 'package:trilhaapp/pages/list_view_h.dart';
 import 'package:trilhaapp/pages/list_view_v.dart';
 import 'package:trilhaapp/pages/tarefa_page/tarefa_page.dart';
+import 'package:trilhaapp/pages/tarefa_page/tarefa_sqlite_page.dart';
 import 'package:trilhaapp/shared/widgets/custom_drawer.dart';
 
 class MainPage extends StatefulWidget {
@@ -39,7 +40,7 @@ class _MainPageState extends State<MainPage> {
                     ImageAssetsPage(),
                     ListViewHPage(),
                     ListViewVPage(),
-                    TarefaHivePage(),
+                    TarefaSQLitePage(),
                   ]),
             ),
             BottomNavigationBar(
