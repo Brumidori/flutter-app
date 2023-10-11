@@ -32,7 +32,7 @@ class _ConsultaCepState extends State<ConsultaCep> {
               keyboardType: TextInputType.number,
               //maxLength: 8,
               onChanged: (String value) async {
-                var cep = value.replaceAll(new RegExp(r'[^0-9]'), '');
+                var cep = value.replaceAll(RegExp(r'[^0-9]'), '');
                 if (cep.length == 8) {
                   setState(() {
                     loading = true;
